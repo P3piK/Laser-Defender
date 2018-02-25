@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-	public float speed;
+	public GameObject laser;
+	public float speed, projectileSpeed, firingRate;
 	float xMin, xMax, yMin, yMax;
 
 	// Use this for initialization
@@ -13,7 +14,20 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			InvokeRepeating("Fire", 0.000001f, firingRate);
+		}
+		if (Input.GetKeyUp (KeyCode.Space)) {
+			CancelInvoke ();
+		}
+
 		PlayerMove ();
+	}
+
+	void Fire()
+	{
+		GameObject beam = (GameObject)Instantiate (laser, transform.position, Quaternion.identity);
+		beam.rigidbody2D.velocity = new Vector2(0f, projectileSpeed);
 	}
 
 	void SetScreenplayBorders()
