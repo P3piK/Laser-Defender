@@ -4,12 +4,14 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
 	public GameObject laser;
-	public float speed, projectileSpeed, firingRate;
+	public LevelManager levelManager;
+	public float speed, projectileSpeed, firingRate, health;
 	float xMin, xMax, yMin, yMax;
 
 	// Use this for initialization
 	void Start () {
 		SetScreenplayBorders ();
+
 	}
 	
 	// Update is called once per frame
@@ -57,6 +59,18 @@ public class PlayerController : MonoBehaviour {
 		float newX = Mathf.Clamp (transform.position.x, xMin, xMax);
 		float newY = Mathf.Clamp (transform.position.y, yMin, yMax);
 		transform.position = new Vector3(newX, newY, transform.position.z);
+	}
+	
+	void OnTriggerEnter2D(Collider2D col)
+	{
+		Projectile missle = col.gameObject.GetComponent<Projectile> ();
+		if(missle)
+		{
+			missle.Hit();
+			health -= missle.GetDamage();
+			if(health <= 0)
+				levelManager.LoadLevel("Win Screen");
+		}
 	}
 }
 
