@@ -5,18 +5,21 @@ public class EnemyBehaviour : MonoBehaviour {
 
 	public int health;
 	public GameObject laser;
-	public float speed, projectileSpeed, firingRate;
+	public float speed, projectileSpeed;
 
+	private float firingRate = 0.5f;
 
-	void Start()
+	void Update()
 	{
-		InvokeRepeating("Fire", 0.000001f, Mathf.Clamp (Random.value * 5, 0.4f, 1.2f));
+		float probability = Time.deltaTime * firingRate;
+		if (Random.value < probability) {
+			Fire ();
+		}
 	}
 	
 	void Fire()
 	{
-		Vector3 pos = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
-		GameObject beam = (GameObject) Instantiate(laser, pos, Quaternion.identity);
+		GameObject beam = (GameObject) Instantiate(laser, transform.position, Quaternion.identity);
 		beam.rigidbody2D.velocity = new Vector2(0f,-projectileSpeed);
 	}
 	
@@ -27,8 +30,9 @@ public class EnemyBehaviour : MonoBehaviour {
 		{
 			missle.Hit();
 			health -= missle.GetDamage();
-			if(health <= 0)
+			if(health <= 0){
 				Destroy(gameObject);
+			}
 		}
 	}
 }

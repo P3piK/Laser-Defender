@@ -5,8 +5,9 @@ public class EnemyController : MonoBehaviour {
 
 	public GameObject enemyPrefab;
 	public float width, height;
-	public float speed = 5f;
+	public float speed;
 
+	private float spawnDelay = 0.5f;
 	private bool movingRight = true;
 	private float xMin, xMax;
 
@@ -14,12 +15,16 @@ public class EnemyController : MonoBehaviour {
 	void Start () {
 		SetBorders ();
 
-		SpawnEnemies ();
 	}
 
 	// Update is called once per frame
 	void Update () {
+		if (AllEnemiesDead()) {
+			SpawnUntilFull();
+		}
+
 		MoveLeftOrRight ();
+
 
 	}
 
@@ -36,6 +41,38 @@ public class EnemyController : MonoBehaviour {
 			GameObject enemy = (GameObject)Instantiate (enemyPrefab, child.position, Quaternion.identity);
 			enemy.transform.parent = child.transform;
 		}
+	}
+
+	void SpawnUntilFull()
+	{
+		Transform freePosition = NextFreePosition ();
+		if (freePosition != null) {
+			GameObject enemy = (GameObject)Instantiate (enemyPrefab, freePosition.position, Quaternion.identity);
+			enemy.transform.parent = freePosition;
+		}
+		if (NextFreePosition ()) {
+			Invoke ("SpawnUntilFull", spawnDelay);
+		}
+	}
+
+	Transform NextFreePosition()
+	{
+		foreach (Transform child in transform) {
+			if(child.childCount == 0)
+				return child;
+		}
+		return null;
+	}
+
+	bool AllEnemiesDead()
+	{
+		foreach (Transform child in transform) {
+			if(child.childCount > 0)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	void MoveLeftOrRight()
