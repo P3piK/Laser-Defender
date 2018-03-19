@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour {
 			missle.Hit();
 			health -= missle.GetDamage();
 			if(health <= 0)
-				levelManager.LoadLevel("Win Screen");
+				levelManager.LoadLevel("Lose Screen");
 		}
 	}
 }
