@@ -6,11 +6,15 @@ public class PlayerController : MonoBehaviour {
 	public GameObject laser;
 	public LevelManager levelManager;
 	public float speed, projectileSpeed, firingRate, health;
-	float xMin, xMax, yMin, yMax;
+	
+	private float xMin, xMax, yMin, yMax;
+	private ScoreKeeper scoreKeeper;
+
 
 	// Use this for initialization
 	void Start () {
 		SetScreenplayBorders ();
+		scoreKeeper = GameObject.Find("Score").GetComponent<ScoreKeeper>();
 
 	}
 	
@@ -69,7 +73,10 @@ public class PlayerController : MonoBehaviour {
 			missle.Hit();
 			health -= missle.GetDamage();
 			if(health <= 0)
+			{
+				scoreKeeper.Reset();
 				levelManager.LoadLevel("Lose Screen");
+			}
 		}
 	}
 }
